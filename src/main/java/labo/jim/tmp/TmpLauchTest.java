@@ -14,7 +14,7 @@ public class TmpLauchTest {
 		
 		r.load();
 		
-		System.out.println(r.getAssertsReports());
+		System.out.println(r.getPendingRules());
 		
 
 	}

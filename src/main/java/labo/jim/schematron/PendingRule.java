@@ -1,6 +1,6 @@
 package labo.jim.schematron;
 
-public class SchematronAssertReport {
+public class PendingRule {
 	
 	private String id;
 	private String textContent;
@@ -8,16 +8,16 @@ public class SchematronAssertReport {
 	// TODO severity, catype, etc...
 
 	
-	public String getId() {
+	public String getKey() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setKey(String id) {
 		this.id = id;
 	}
-	public String getTextContent() {
+	public String getName() {
 		return textContent;
 	}
-	public void setTextContent(String textContent) {
+	public void setName(String textContent) {
 		this.textContent = textContent;
 	}
 	@Override

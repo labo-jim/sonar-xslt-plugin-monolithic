@@ -28,11 +28,12 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	private static final String TEXT_CONTENT = "normalize-space(text())";
 	private static final String ID_ATTR = "string(@id)";
 	
+	private boolean loaded = false;
 	
-	private File schematron;
+	private Source schematron;
 	
 	private Source schematronXSLT;
-	private List<SchematronAssertReport> assertsReports;
+	private List<PendingRule> assertsReports;
 
 	private static XPathCompiler localXpathCompiler;
 	
@@ -40,13 +41,15 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		localXpathCompiler = SaxonHolder.getInstance().getProcessor().newXPathCompiler();
 		localXpathCompiler.declareNamespace("", SCHEMATRON_NS);
 	}
-
-	public SchematronReader(File schematron) {
+	
+	public SchematronReader(Source schematron){
 		super();
 		this.schematron = schematron;
 		this.assertsReports = new ArrayList<>();
-		
-		
+	}
+
+	public SchematronReader(File schematron) {
+		this(new StreamSource(schematron));
 	}
 	
 	// ===
@@ -57,7 +60,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 
 
 
-	public List<SchematronAssertReport> getAssertsReports() {
+	public List<PendingRule> getPendingRules() {
 		return assertsReports;
 	}
 	
@@ -68,7 +71,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		SaxonHolder sh = SaxonHolder.getInstance();
 		try {
 			// TODO keep compiled step XSLTs
-			XdmNode step1 = sh.runXslt(new StreamSource(schematron), stepAsSource(SchematronStep.STEP1));
+			XdmNode step1 = sh.runXslt(schematron, stepAsSource(SchematronStep.STEP1));
 			XdmNode step2 = sh.runXslt(step1.asSource(), stepAsSource(SchematronStep.STEP2));
 			
 			// in Step2 <extends> are resolved
@@ -77,6 +80,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 			XdmNode step3 = sh.runXslt(step2.asSource(), stepAsSource(SchematronStep.STEP3));
 			this.schematronXSLT = step3.asSource();
 			
+			this.loaded = true;
 			
 		} catch (SaxonApiException | URISyntaxException e) {
 			throw new ProcessingException(e);
@@ -103,12 +107,12 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	private void processSingleAssertReport(XdmItem item) throws SaxonApiException {
 		// TODO refacto de tout ça !
 		
-		SchematronAssertReport assertReport = new SchematronAssertReport();
+		PendingRule assertReport = new PendingRule();
 		 XdmValue id = localXpathCompiler.evaluate(ID_ATTR, item);
 		 XdmValue textContent = localXpathCompiler.evaluate(TEXT_CONTENT, item);
 		 
-		 assertReport.setId(((XdmAtomicValue) id).getStringValue());
-		 assertReport.setTextContent(((XdmAtomicValue) textContent).getStringValue());
+		 assertReport.setKey(((XdmAtomicValue) id).getStringValue());
+		 assertReport.setName(((XdmAtomicValue) textContent).getStringValue());
 		
 		 this.assertsReports.add(assertReport);
 	}
@@ -118,6 +122,12 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		URL url = SchematronStep.class.getClassLoader().getResource(RSRC_PREFIX + step.getStepFile());
 		return new StreamSource(new File(url.toURI()));
 	}
+
+	public boolean isLoaded() {
+		return loaded;
+	}
+
+
 	
 
 }
