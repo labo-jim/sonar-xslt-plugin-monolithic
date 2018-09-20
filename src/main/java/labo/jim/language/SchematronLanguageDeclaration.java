@@ -19,6 +19,7 @@ import labo.jim.schematron.ResourceHelper;
 import labo.jim.schematron.SchematronBasedQualityProfile;
 import labo.jim.schematron.SchematronBasedRulesDefinition;
 import labo.jim.schematron.SchematronReader;
+import labo.jim.schematron.SchematronSensor;
 
 public class SchematronLanguageDeclaration {
 	
@@ -27,7 +28,7 @@ public class SchematronLanguageDeclaration {
 	private String key;
 	private List<String> fileSuffixes = new ArrayList<>();;
 	private String qualityProfileName;
-	private String ruleRepositoryName;
+	private String ruleRepositoryKey;
 	
 	private List<SchematronReader> schematrons = new ArrayList<>();
 	private List<PendingRule> pendingRules = new ArrayList<>(50);
@@ -41,10 +42,11 @@ public class SchematronLanguageDeclaration {
 		for (SchematronReader reader : this.schematrons) {
 			reader.load();
 			this.pendingRules.addAll(reader.getPendingRules());
+			pluginContext.addExtension(new SchematronSensor(reader, key, ruleRepositoryKey));
 		}
 		
-		RulesDefinition rulesDefinition = new SchematronBasedRulesDefinition(pendingRules, ruleRepositoryName, key);
-		BuiltInQualityProfilesDefinition qualityProfileDefinition = new SchematronBasedQualityProfile(key, qualityProfileName, ruleRepositoryName, pendingRules);
+		RulesDefinition rulesDefinition = new SchematronBasedRulesDefinition(pendingRules, ruleRepositoryKey, key);
+		BuiltInQualityProfilesDefinition qualityProfileDefinition = new SchematronBasedQualityProfile(key, qualityProfileName, ruleRepositoryKey, pendingRules);
 		
 		pluginContext.addExtension(language);
 		pluginContext.addExtension(language.getProperties());
@@ -88,7 +90,7 @@ public class SchematronLanguageDeclaration {
 	}
 	
 	public SchematronLanguageDeclaration ruleRepositoryName(String ruleRepositoryName){
-		this.ruleRepositoryName = ruleRepositoryName;
+		this.ruleRepositoryKey = ruleRepositoryName;
 		return this;
 	}
 	
@@ -99,7 +101,7 @@ public class SchematronLanguageDeclaration {
 		
 		if(this.name == null) this.name = this.key;
 		if(this.qualityProfileName == null) this.qualityProfileName = this.key;
-		if(this.ruleRepositoryName == null) this.ruleRepositoryName = this.key;		
+		if(this.ruleRepositoryKey == null) this.ruleRepositoryKey = this.key;		
 	}
 
 	
