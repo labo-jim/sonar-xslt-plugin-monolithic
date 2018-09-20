@@ -1,5 +1,7 @@
 package labo.jim.test;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import labo.jim.language.SchematronLanguageDeclaration;
@@ -17,7 +19,7 @@ public class TestSchematronReader {
 			SchematronReader reader = new SchematronReader(ResourceHelper.resource(getClass(), PETIT_SCHEMATRON));
 			reader.load();
 			
-			System.out.println(reader.getPendingRules());
+			assertTrue(reader.getPendingRules().size() == 3);
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -33,7 +33,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	private Source schematron;
 	
 	private Source schematronXSLT;
-	private List<PendingRule> assertsReports;
+	private List<PendingRule> pendingRules;
 
 	private static XPathCompiler localXpathCompiler;
 	
@@ -45,7 +45,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	public SchematronReader(Source schematron){
 		super();
 		this.schematron = schematron;
-		this.assertsReports = new ArrayList<>();
+		this.pendingRules = new ArrayList<>();
 	}
 
 	public SchematronReader(File schematron) {
@@ -61,7 +61,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 
 
 	public List<PendingRule> getPendingRules() {
-		return assertsReports;
+		return pendingRules;
 	}
 	
 	// ====
@@ -114,7 +114,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		 assertReport.setKey(((XdmAtomicValue) id).getStringValue());
 		 assertReport.setName(((XdmAtomicValue) textContent).getStringValue());
 		
-		 this.assertsReports.add(assertReport);
+		 this.pendingRules.add(assertReport);
 	}
 
 	private Source stepAsSource(SchematronStep step)  {
