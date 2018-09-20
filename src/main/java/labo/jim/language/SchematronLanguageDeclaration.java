@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.sonar.api.Plugin.Context;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.api.utils.log.Loggers;
 
 import labo.jim.exception.ProcessingException;
 import labo.jim.schematron.PendingRule;
@@ -68,12 +70,8 @@ public class SchematronLanguageDeclaration {
 	}
 	
 	public SchematronLanguageDeclaration addSchematronResource(String resourceName){
-		URL url = SchematronLanguageDeclaration.class.getClassLoader().getResource(resourceName);
-		try {
-			return addSchematron(new File(url.toURI()));
-		} catch (URISyntaxException e) {
-			throw new IllegalArgumentException(e);
-		}
+		return addSchematron(new StreamSource(SchematronLanguageDeclaration.class.getResourceAsStream(resourceName)));
+		
 	}
 	public SchematronLanguageDeclaration addSchematron(Source schematron){
 		this.schematrons.add(new SchematronReader(schematron));

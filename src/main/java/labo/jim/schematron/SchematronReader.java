@@ -1,6 +1,8 @@
 package labo.jim.schematron;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,6 +11,9 @@ import java.util.List;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 
 import labo.jim.exception.ProcessingException;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -28,6 +33,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	private static final String TEXT_CONTENT = "normalize-space(text())";
 	private static final String ID_ATTR = "string(@id)";
 	
+	
 	private boolean loaded = false;
 	
 	private Source schematron;
@@ -36,6 +42,8 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	private List<PendingRule> assertsReports;
 
 	private static XPathCompiler localXpathCompiler;
+	
+	private static final Logger LOG = Loggers.get(SchematronReader.class);
 	
 	static {
 		localXpathCompiler = SaxonHolder.getInstance().getProcessor().newXPathCompiler();
@@ -71,6 +79,9 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		SaxonHolder sh = SaxonHolder.getInstance();
 		try {
 			// TODO keep compiled step XSLTs
+			LOG.info("BAAAAH - SCHEMATRON SOURCEE" + schematron.toString());
+			LOG.info("BAAAAH - STEP 1" + stepAsSource(SchematronStep.STEP1).toString());
+			
 			XdmNode step1 = sh.runXslt(schematron, stepAsSource(SchematronStep.STEP1));
 			XdmNode step2 = sh.runXslt(step1.asSource(), stepAsSource(SchematronStep.STEP2));
 			
@@ -119,9 +130,12 @@ private static final String RSRC_PREFIX = "schematron-code/";
 
 	private Source stepAsSource(SchematronStep step) throws URISyntaxException {
 		// TODO externalize : SchematronCodeProvider...
-		URL url = SchematronStep.class.getClassLoader().getResource(RSRC_PREFIX + step.getStepFile());
-		return new StreamSource(new File(url.toURI()));
-	}
+		InputStream stream = SchematronStep.class.getClassLoader().getResourceAsStream(RSRC_PREFIX + step.getStepFile());
+		StreamSource ss = new StreamSource(stream);
+		ss.setSystemId(SchematronStep.class.getClassLoader().getResource(RSRC_PREFIX + step.getStepFile()).toExternalForm());
+		
+		return ss;
+		}
 
 	public boolean isLoaded() {
 		return loaded;
