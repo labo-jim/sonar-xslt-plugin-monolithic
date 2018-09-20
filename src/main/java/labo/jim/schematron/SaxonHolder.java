@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import org.xmlresolver.Resolver;
+
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -41,9 +43,11 @@ public class SaxonHolder {
 	}
 	
 	private SaxonHolder(){
+		Resolver resolver = new Resolver();
 		proc = new Processor(false);
 		docBuilder = proc.newDocumentBuilder();
 		compiler = proc.newXsltCompiler();
+		compiler.setURIResolver(resolver);
 		xpathCompiler = proc.newXPathCompiler();
 	}
 	
