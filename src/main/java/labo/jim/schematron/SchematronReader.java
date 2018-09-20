@@ -82,7 +82,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 			
 			this.loaded = true;
 			
-		} catch (SaxonApiException | URISyntaxException e) {
+		} catch (SaxonApiException  e) {
 			throw new ProcessingException(e);
 		}
 	}
@@ -117,10 +117,9 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		 this.assertsReports.add(assertReport);
 	}
 
-	private Source stepAsSource(SchematronStep step) throws URISyntaxException {
-		// TODO externalize : SchematronCodeProvider...
-		URL url = SchematronStep.class.getClassLoader().getResource(RSRC_PREFIX + step.getStepFile());
-		return new StreamSource(new File(url.toURI()));
+	private Source stepAsSource(SchematronStep step)  {
+		String src = RSRC_PREFIX + step.getStepFile();
+		return ResourceHelper.resource(SchematronReader.class, src);
 	}
 
 	public boolean isLoaded() {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.sonar.api.Plugin.Context;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
@@ -14,6 +15,7 @@ import org.sonar.api.server.rule.RulesDefinition;
 
 import labo.jim.exception.ProcessingException;
 import labo.jim.schematron.PendingRule;
+import labo.jim.schematron.ResourceHelper;
 import labo.jim.schematron.SchematronBasedQualityProfile;
 import labo.jim.schematron.SchematronBasedRulesDefinition;
 import labo.jim.schematron.SchematronReader;
@@ -68,19 +70,15 @@ public class SchematronLanguageDeclaration {
 	}
 	
 	public SchematronLanguageDeclaration addSchematronResource(String resourceName){
-		URL url = SchematronLanguageDeclaration.class.getClassLoader().getResource(resourceName);
-		try {
-			return addSchematron(new File(url.toURI()));
-		} catch (URISyntaxException e) {
-			throw new IllegalArgumentException(e);
-		}
+		this.addSchematron(ResourceHelper.resource(this.getClass(), resourceName));
+		return this;
 	}
 	public SchematronLanguageDeclaration addSchematron(Source schematron){
 		this.schematrons.add(new SchematronReader(schematron));
 		return this;
 	}
 	public SchematronLanguageDeclaration addSchematron(File schematron){
-		this.schematrons.add(new SchematronReader(schematron));
+		this.addSchematron(new StreamSource(schematron));
 		return this;
 	}
 	
@@ -102,6 +100,13 @@ public class SchematronLanguageDeclaration {
 		if(this.name == null) this.name = this.key;
 		if(this.qualityProfileName == null) this.qualityProfileName = this.key;
 		if(this.ruleRepositoryName == null) this.ruleRepositoryName = this.key;		
+	}
+
+	
+	// ==================
+	
+	public List<PendingRule> getPendingRules() {
+		return pendingRules;
 	}
 	
 	

@@ -1,25 +1,20 @@
 package labo.jim.test;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
 import org.junit.Test;
 
-import labo.jim.exception.ProcessingException;
+import labo.jim.language.SchematronLanguageDeclaration;
+import labo.jim.schematron.ResourceHelper;
 import labo.jim.schematron.SchematronReader;
 
 public class TestSchematronReader {
+	
+	public static final String PETIT_SCHEMATRON = "petit-schematron.sch";
 	
 	@Test
 	public void monPetitSchematron() {
 		try {
 			
-			SchematronReader reader = new SchematronReader(fileBasedSchSource());
+			SchematronReader reader = new SchematronReader(ResourceHelper.resource(getClass(), PETIT_SCHEMATRON));
 			reader.load();
 			
 			System.out.println(reader.getPendingRules());
@@ -29,10 +24,8 @@ public class TestSchematronReader {
 		}
 	}
 	
-	public Source fileBasedSchSource() throws URISyntaxException {
-		URL url = TestSchematronReader.class.getClassLoader().getResource("petit-schematron.sch");
-		System.out.println(url.toExternalForm());
-		return new StreamSource(new File(url.toURI()));
-	}
+
+	
+	
 
 }
