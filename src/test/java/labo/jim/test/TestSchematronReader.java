@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import labo.jim.language.SchematronLanguageDeclaration;
-import labo.jim.schematron.ResourceHelper;
+import labo.jim.helpers.ResourceHelper;
+import labo.jim.schematron.SchematronLanguageDeclaration;
 import labo.jim.schematron.SchematronReader;
 
 public class TestSchematronReader {

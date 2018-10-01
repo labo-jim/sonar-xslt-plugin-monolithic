@@ -1,4 +1,4 @@
-package labo.jim.schematron;
+package labo.jim.helpers;
 
 import javax.xml.transform.Source;
 import labo.jim.exception.ProcessingException;

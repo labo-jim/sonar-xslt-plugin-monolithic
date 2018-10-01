@@ -1,4 +1,4 @@
-package labo.jim.language;
+package labo.jim.schematron;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -14,12 +14,7 @@ import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 import org.sonar.api.server.rule.RulesDefinition;
 
 import labo.jim.exception.ProcessingException;
-import labo.jim.schematron.PendingRule;
-import labo.jim.schematron.ResourceHelper;
-import labo.jim.schematron.SchematronBasedQualityProfile;
-import labo.jim.schematron.SchematronBasedRulesDefinition;
-import labo.jim.schematron.SchematronReader;
-import labo.jim.schematron.SchematronSensor;
+import labo.jim.helpers.ResourceHelper;
 
 public class SchematronLanguageDeclaration {
 	

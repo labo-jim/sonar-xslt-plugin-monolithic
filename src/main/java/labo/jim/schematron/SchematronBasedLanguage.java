@@ -1,4 +1,4 @@
-package labo.jim.language;
+package labo.jim.schematron;
 
 import static java.util.Arrays.asList;
 

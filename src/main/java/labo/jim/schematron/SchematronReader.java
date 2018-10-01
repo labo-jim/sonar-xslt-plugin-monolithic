@@ -11,6 +11,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import labo.jim.exception.ProcessingException;
+import labo.jim.helpers.ResourceHelper;
+import labo.jim.helpers.SaxonHolder;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;

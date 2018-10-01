@@ -19,6 +19,8 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
 import labo.jim.exception.ProcessingException;
+import labo.jim.helpers.SaxonHolder;
+import labo.jim.helpers.XpathLocator;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathExecutable;
