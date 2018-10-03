@@ -17,10 +17,10 @@ public class XpathLocator {
 
 
 	public XpathLocator(Source xmlDocument) throws ProcessingException {
-		Processor proc = new Processor(false);
+		Processor proc = SaxonHolder.getInstance().getProcessor();
+		this.xpathCompilo = proc.newXPathCompiler();
 		this.docBuilder = proc.newDocumentBuilder();
 		this.docBuilder.setLineNumbering(true);
-		this.xpathCompilo = proc.newXPathCompiler();
 		try {
 			builtDocument = this.docBuilder.build(xmlDocument);
 		} catch (SaxonApiException e) {
@@ -29,7 +29,9 @@ public class XpathLocator {
 	}
 	
 	public XpathLocator(XdmNode xmlDocument) {
-			this.builtDocument = xmlDocument;	
+		Processor proc = SaxonHolder.getInstance().getProcessor();
+		this.xpathCompilo = proc.newXPathCompiler();
+		this.builtDocument = xmlDocument;	
 	}
 	
 	
