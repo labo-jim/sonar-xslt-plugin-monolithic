@@ -28,6 +28,10 @@ public class XpathLocator {
 		}
 	}
 	
+	public XpathLocator(XdmNode xmlDocument) {
+			this.builtDocument = xmlDocument;	
+	}
+	
 	
 	public int locateSingle(String xpath) throws ProcessingException{
 		try {

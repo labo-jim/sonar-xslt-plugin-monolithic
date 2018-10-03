@@ -46,6 +46,7 @@ public class SaxonHolder {
 		Resolver resolver = new Resolver();
 		proc = new Processor(false);
 		docBuilder = proc.newDocumentBuilder();
+		docBuilder.setLineNumbering(true);
 		compiler = proc.newXsltCompiler();
 		compiler.setURIResolver(resolver);
 		xpathCompiler = proc.newXPathCompiler();
@@ -81,6 +82,14 @@ public class SaxonHolder {
 	
 	public XdmNode runXslt(Source source, Source xslt) throws SaxonApiException{	
 		return runXslt(source, compile(xslt));
+	}
+	
+	public XdmNode runXslt(XdmNode source, Source xslt) throws SaxonApiException{	
+		return runXslt(source.asSource(), compile(xslt));
+	}
+	
+	public XdmNode runXslt(XdmNode source, XsltTransformer xslt) throws SaxonApiException{	
+		return runXslt(source.asSource(), xslt);
 	}
 	
 	public XsltTransformer compile(Source xslt) throws SaxonApiException{

@@ -85,9 +85,10 @@ public class SchematronSensor implements Sensor{
 	    Iterable<InputFile> files = fs.inputFiles(fs.predicates().hasLanguage(this.language));
 	    for (InputFile file : files) {
 	    	try {
-
-				XdmNode report = SaxonHolder.getInstance().runXslt(inputFileSource(file), reader.getSchematronXSLT());
-				processReport(file,report,context);
+	    		
+	    		XdmNode inputFileDocument = inputFileDocument(file);
+				XdmNode report = SaxonHolder.getInstance().runXslt(inputFileDocument, reader.getSchematronXSLT());
+				processReport(file,inputFileDocument,report,context);
 				
 			} catch (SaxonApiException | IOException | ProcessingException e) {
 				LOG.error("An error occurend",e); // TODO gérer ça
@@ -95,14 +96,14 @@ public class SchematronSensor implements Sensor{
 		}
 	}
 
-	private void processReport(InputFile inputFile,XdmNode report, SensorContext context) throws SaxonApiException, ProcessingException, IOException {
+	private void processReport(InputFile inputFile,XdmNode inputFileDocument, XdmNode report, SensorContext context) throws SaxonApiException, ProcessingException, IOException {
 		List<PendingIssue> pendingIssues = prepareIssues(report);
 		
 		for (PendingIssue pendingIssue : pendingIssues) {
 			NewIssue newIssue = context.newIssue();
 			newIssue.forRule(pendingIssue.rule(repositoryKey));
 			
-			XpathLocator locator = new XpathLocator(inputFileSource(inputFile));
+			XpathLocator locator = new XpathLocator(inputFileDocument);
 			int lineNumber = locator.locateSingle(pendingIssue.getXpathLocation());		
 			newIssue.at(newIssue.newLocation().on(inputFile).at(inputFile.selectLine(lineNumber)));
 			
@@ -124,11 +125,13 @@ public class SchematronSensor implements Sensor{
 		return pendingIssues;
 	}
 
-	private Source inputFileSource(InputFile file) throws IOException {
+	private XdmNode inputFileDocument(InputFile file) throws IOException, SaxonApiException {
 		InputStream stream = file.inputStream();
 		Source source = new StreamSource(stream);
 		source.setSystemId(file.uri().toString());
-		return source;	
+		return SaxonHolder.getInstance().buildDocument(source);	
 	}
+	
+	
 
 }
