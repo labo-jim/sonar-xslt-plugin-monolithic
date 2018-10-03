@@ -76,7 +76,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<!-- the entry-point class that extends org.sonar.api.SonarPlugin -->
-					<pluginClass>labo.jim.xsltSonarPlugin.SonarXSLTPlugin</pluginClass>
+					<pluginClass>labo.jim.sonarPlugin.SonarXSLTPlugin</pluginClass>
 
 					<!-- advanced properties can be set here. See paragraph "Advanced Build 
 						Properties". -->
