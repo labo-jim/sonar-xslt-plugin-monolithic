@@ -38,7 +38,7 @@ public class SchematronSensor implements Sensor{
 	private static final String ASSERT_REPORT = "//failed-assert | //successful-report";
 	private static final String ID_ATTR_STRING_VALUE = "string(@id)";
 	private static final String LOCATION_ATTR_STRING_VALUE = "string(@location)";
-	private static final String TEXT_CONTENT = "normalize-space(text())";
+	private static final String TEXT_CONTENT = "normalize-space(text)"; // <= the tag called "text", not a joke.
 	
 	private static XPathExecutable xpathAssertReport;
 	private static XPathCompiler localCompiler;
