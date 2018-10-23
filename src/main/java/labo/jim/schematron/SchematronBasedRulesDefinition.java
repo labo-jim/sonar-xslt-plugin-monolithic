@@ -24,7 +24,7 @@ public class SchematronBasedRulesDefinition implements RulesDefinition{
 		NewRepository repo = context.createRepository(repoKey, LanguageKey);
 		for (PendingRule pendingRule : pendingRules) {
 			repo.createRule(pendingRule.getKey()).setName(pendingRule.getName())
-			.setMarkdownDescription(pendingRule.getName());
+			.setHtmlDescription(pendingRule.getDescription());
 			
 			// TODO Severity
 			// TODO type

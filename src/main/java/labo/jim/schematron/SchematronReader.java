@@ -26,9 +26,11 @@ public class SchematronReader {
 private static final String RSRC_PREFIX = "schematron-code/";
 	
 	public static final String SCHEMATRON_NS = "http://purl.oclc.org/dsdl/schematron";
+	public static final String SONAR_SCHEMATRON_NS = "http://www.jimetevenard.com/ns/sonar-xslt";
+	public static final String XHTML_NS = "http://www.w3.org/1999/xhtml";
+	
 	private static final String ASSERT_REPORT = "//assert|//report";
-	private static final String TEXT_CONTENT = "normalize-space(text())";
-	private static final String ID_ATTR = "string(@id)";
+	private static final String ID_ATTRIBUTE_VALUE = "string(@id)";
 	
 	private boolean loaded = false;
 	
@@ -42,6 +44,8 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	static {
 		localXpathCompiler = SaxonHolder.getInstance().getProcessor().newXPathCompiler();
 		localXpathCompiler.declareNamespace("", SCHEMATRON_NS);
+		localXpathCompiler.declareNamespace("sonar", SONAR_SCHEMATRON_NS);
+		localXpathCompiler.declareNamespace("html", XHTML_NS);
 	}
 	
 	public SchematronReader(Source schematron){
@@ -91,38 +95,63 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	
 	// ===
 	
-	private void processAssertsReports(XdmNode step2) throws SaxonApiException {
+	private void processAssertsReports(XdmNode resolvedSchematron) throws SaxonApiException {
 		
 		XPathSelector sel = localXpathCompiler.compile(ASSERT_REPORT).load();
 		
-		sel.setContextItem(step2);
+		sel.setContextItem(resolvedSchematron);
 		
 		Iterator<XdmItem> iterator = sel.iterator();
 		while (iterator.hasNext()) {
 			XdmItem item = iterator.next();
 			
-			processSingleAssertReport(item);
+			processSingleAssertReport(item, resolvedSchematron);
 		}
 		
 	}
 
-	private void processSingleAssertReport(XdmItem item) throws SaxonApiException {
+	private void processSingleAssertReport(XdmItem item, XdmNode resolvedSchematron) throws SaxonApiException {
 		// TODO refacto de tout ça !
 		
-		PendingRule assertReport = new PendingRule();
-		 XdmValue id = localXpathCompiler.evaluate(ID_ATTR, item);
-		 XdmValue textContent = localXpathCompiler.evaluate(TEXT_CONTENT, item);
-		 
-		 assertReport.setKey(((XdmAtomicValue) id).getStringValue());
-		 assertReport.setName(((XdmAtomicValue) textContent).getStringValue());
 		
-		 this.pendingRules.add(assertReport);
+		 PendingRule pendingRule = new PendingRule();
+		 XdmValue idXdm = localXpathCompiler.evaluate(ID_ATTRIBUTE_VALUE, item);
+		 String id = ((XdmAtomicValue) idXdm).getStringValue();
+		 
+		 XdmValue nameXdm = localXpathCompiler.evaluate(relatedNameXPath(id), resolvedSchematron);
+		 String name = ((XdmAtomicValue) nameXdm).getStringValue();
+		 
+		 XdmValue description = localXpathCompiler.evaluate(relatedDescriptionXPath(id), resolvedSchematron);
+		 
+		 pendingRule.setKey(id);
+		 pendingRule.setName(name);
+		 
+		 // La description est facultative.
+		 if(description instanceof XdmAtomicValue){
+			 // TODO : Ben non, c'est du contenu mixte (html)!
+			 pendingRule.setDescription(((XdmAtomicValue) description).getStringValue());	 
+		 } else {
+			 pendingRule.setDescription(name);
+		 }
+		
+		 this.pendingRules.add(pendingRule);
+	}
+	
+	
+	
+	private String relatedNameXPath(String id){
+		return "//sonar:name[@rel = '" + id + "']";
+	}
+	private String relatedDescriptionXPath(String id){
+		return "//sonar:description[@rel = '" + id + "']";
 	}
 
 	private Source stepAsSource(SchematronStep step)  {
 		String src = RSRC_PREFIX + step.getStepFile();
 		return ResourceHelper.resource(SchematronReader.class, src);
 	}
+	
+	
 
 	public boolean isLoaded() {
 		return loaded;

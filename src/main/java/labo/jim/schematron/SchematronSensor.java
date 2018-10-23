@@ -27,6 +27,7 @@ import net.sf.saxon.s9api.XPathExecutable;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XdmValue;
 
 
 
@@ -37,8 +38,9 @@ public class SchematronSensor implements Sensor{
 	private static final String ASSERT_REPORT = "//failed-assert | //successful-report";
 	private static final String ID_ATTR_STRING_VALUE = "string(@id)";
 	private static final String LOCATION_ATTR_STRING_VALUE = "string(@location)";
+	private static final String TEXT_CONTENT = "normalize-space(text())";
 	
-	private static XPathExecutable xpathEcecutable;
+	private static XPathExecutable xpathAssertReport;
 	private static XPathCompiler localCompiler;
 	private static final Logger LOG = Loggers.get(SchematronSensor.class);
 	
@@ -51,7 +53,7 @@ public class SchematronSensor implements Sensor{
 		localCompiler = SaxonHolder.getInstance().getProcessor().newXPathCompiler();
 		localCompiler.declareNamespace("", SVRL_NS);
 		try {
-			xpathEcecutable = localCompiler.compile(ASSERT_REPORT);
+			xpathAssertReport = localCompiler.compile(ASSERT_REPORT);
 		} catch (SaxonApiException e) {
 			throw new UnsupportedOperationException(e);
 		}
@@ -104,8 +106,12 @@ public class SchematronSensor implements Sensor{
 			newIssue.forRule(pendingIssue.rule(repositoryKey));
 			
 			XpathLocator locator = new XpathLocator(inputFileDocument);
-			int lineNumber = locator.locateSingle(pendingIssue.getXpathLocation());		
-			newIssue.at(newIssue.newLocation().on(inputFile).at(inputFile.selectLine(lineNumber)));
+			int lineNumber = locator.locateSingle(pendingIssue.getXpathLocation());	
+			
+			newIssue.at(newIssue.newLocation()
+					.on(inputFile)
+					.message(pendingIssue.getMessage())
+					.at(inputFile.selectLine(lineNumber)));
 			
 			newIssue.save();
 		}
@@ -114,13 +120,17 @@ public class SchematronSensor implements Sensor{
 
 	private List<PendingIssue> prepareIssues(XdmNode report) throws SaxonApiException, ProcessingException {
 		List<PendingIssue> pendingIssues = new LinkedList<>();
-		XPathSelector selector = xpathEcecutable.load();
+		XPathSelector selector = xpathAssertReport.load();
 		selector.setContextItem(report);
 		selector.evaluate();
 		
-		for (XdmItem xdmItem : selector) {
+		for (XdmItem triggeredItem : selector) {
 			
-			pendingIssues.add(PendingIssue.of(localCompiler.evaluate(ID_ATTR_STRING_VALUE, xdmItem), localCompiler.evaluate(LOCATION_ATTR_STRING_VALUE, xdmItem)));
+			XdmValue idValue = localCompiler.evaluate(ID_ATTR_STRING_VALUE, triggeredItem);
+			XdmValue locationValue = localCompiler.evaluate(LOCATION_ATTR_STRING_VALUE, triggeredItem);
+			XdmValue messageValue = localCompiler.evaluate(TEXT_CONTENT, triggeredItem);
+			
+			pendingIssues.add(PendingIssue.of(idValue , locationValue, messageValue ));
 		}
 		return pendingIssues;
 	}

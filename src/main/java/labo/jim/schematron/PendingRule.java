@@ -3,7 +3,8 @@ package labo.jim.schematron;
 public class PendingRule {
 	
 	private String id;
-	private String textContent;
+	private String name;
+	private String description;
 	
 	// TODO severity, catype, etc...
 
@@ -15,15 +16,22 @@ public class PendingRule {
 		this.id = id;
 	}
 	public String getName() {
-		return textContent;
+		return name;
 	}
-	public void setName(String textContent) {
-		this.textContent = textContent;
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	@Override
 	public String toString() {
-		return "SchematronAssertReport [id=" + id + ", textContent=" + textContent + "]";
+		return "SchematronAssertReport [id=" + id + ", name=" + name + "]";
 	}
+	
 	
 	
 	
