@@ -140,7 +140,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	
 	
 	private String relatedNameXPath(String id){
-		return "//sonar:name[@rel = '" + id + "']";
+		return "normalize-space(//sonar:name[@rel = '" + id + "'])";
 	}
 	private String relatedDescriptionXPath(String id){
 		return "//sonar:description[@rel = '" + id + "']";

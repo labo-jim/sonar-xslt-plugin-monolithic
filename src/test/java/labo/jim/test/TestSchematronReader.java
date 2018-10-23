@@ -20,6 +20,7 @@ public class TestSchematronReader {
 			reader.load();
 			
 			assertTrue(reader.getPendingRules().size() == 3);
+			assertEquals("Variables Should be Typed",reader.getPendingRules().get(0).getName());
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
