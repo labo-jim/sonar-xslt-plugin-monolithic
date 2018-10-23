@@ -13,7 +13,10 @@ import javax.xml.transform.stream.StreamSource;
 import labo.jim.exception.ProcessingException;
 import labo.jim.helpers.ResourceHelper;
 import labo.jim.helpers.SaxonHolder;
+import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.Serializer.Property;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmAtomicValue;
@@ -40,18 +43,25 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	private List<PendingRule> pendingRules;
 
 	private static XPathCompiler localXpathCompiler;
+	private static Serializer htmlDescriptionSerializer;
 	
 	static {
 		localXpathCompiler = SaxonHolder.getInstance().getProcessor().newXPathCompiler();
 		localXpathCompiler.declareNamespace("", SCHEMATRON_NS);
 		localXpathCompiler.declareNamespace("sonar", SONAR_SCHEMATRON_NS);
 		localXpathCompiler.declareNamespace("html", XHTML_NS);
+		prepareSerializer(SaxonHolder.getInstance().getProcessor());
 	}
 	
 	public SchematronReader(Source schematron){
 		super();
 		this.schematron = schematron;
 		this.pendingRules = new ArrayList<>();
+	}
+
+	private static void prepareSerializer(Processor processor) {
+		htmlDescriptionSerializer = processor.newSerializer();
+		htmlDescriptionSerializer.setOutputProperty(Property.OMIT_XML_DECLARATION, "yes");		
 	}
 
 	public SchematronReader(File schematron) {
@@ -127,9 +137,10 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		 pendingRule.setName(name);
 		 
 		 // La description est facultative.
-		 if(description instanceof XdmAtomicValue){
+		 if(description instanceof XdmNode){
 			 // TODO : Ben non, c'est du contenu mixte (html)!
-			 pendingRule.setDescription(((XdmAtomicValue) description).getStringValue());	 
+			 pendingRule.setDescription(htmlDescriptionSerializer.serializeNodeToString((XdmNode) description));
+			 	 
 		 } else {
 			 pendingRule.setDescription(name);
 		 }
@@ -143,7 +154,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		return "normalize-space(//sonar:name[@rel = '" + id + "'])";
 	}
 	private String relatedDescriptionXPath(String id){
-		return "//sonar:description[@rel = '" + id + "']";
+		return "//sonar:description[@rel = '" + id + "']/*";
 	}
 
 	private Source stepAsSource(SchematronStep step)  {
