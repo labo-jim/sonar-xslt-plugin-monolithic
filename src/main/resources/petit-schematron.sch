@@ -12,6 +12,7 @@
             <sonar:name rel="typed-variables">Variables Should be Typed</sonar:name>
             <sonar:description rel="typed-variables">
                 <html:p>It is a good practice to type your variables.</html:p>
+                <html:p>It's really a good practice. trust me.</html:p>
             </sonar:description>
             <sch:assert test="@as" id="typed-variables" sonar:type="TODO" sonar:severity="TODO" >
                 Please provide a type for varaible <sch:value-of select="@name"/>

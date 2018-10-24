@@ -1,8 +1,6 @@
 package labo.jim.schematron;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,10 +11,7 @@ import javax.xml.transform.stream.StreamSource;
 import labo.jim.exception.ProcessingException;
 import labo.jim.helpers.ResourceHelper;
 import labo.jim.helpers.SaxonHolder;
-import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.Serializer.Property;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
 import net.sf.saxon.s9api.XdmAtomicValue;
@@ -41,28 +36,26 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	
 	private Source schematronXSLT;
 	private List<PendingRule> pendingRules;
+	private SimpleHtml simpleHtml;
 
 	private static XPathCompiler localXpathCompiler;
-	private static Serializer htmlDescriptionSerializer;
+	
 	
 	static {
 		localXpathCompiler = SaxonHolder.getInstance().getProcessor().newXPathCompiler();
 		localXpathCompiler.declareNamespace("", SCHEMATRON_NS);
 		localXpathCompiler.declareNamespace("sonar", SONAR_SCHEMATRON_NS);
 		localXpathCompiler.declareNamespace("html", XHTML_NS);
-		prepareSerializer(SaxonHolder.getInstance().getProcessor());
 	}
 	
 	public SchematronReader(Source schematron){
 		super();
 		this.schematron = schematron;
 		this.pendingRules = new ArrayList<>();
+
 	}
 
-	private static void prepareSerializer(Processor processor) {
-		htmlDescriptionSerializer = processor.newSerializer();
-		htmlDescriptionSerializer.setOutputProperty(Property.OMIT_XML_DECLARATION, "yes");		
-	}
+	
 
 	public SchematronReader(File schematron) {
 		this(new StreamSource(schematron));
@@ -84,8 +77,14 @@ private static final String RSRC_PREFIX = "schematron-code/";
 
 
 	public void load() throws ProcessingException{
+		if(this.loaded){
+			throw new IllegalStateException("Already loaded.");
+		}
+		
 		SaxonHolder sh = SaxonHolder.getInstance();
 		try {
+			if(this.simpleHtml == null) this.simpleHtml = new SimpleHtml();
+			 
 			// TODO keep compiled step XSLTs
 			XdmNode step1 = sh.runXslt(schematron, stepAsSource(SchematronStep.STEP1));
 			XdmNode step2 = sh.runXslt(step1.asSource(), stepAsSource(SchematronStep.STEP2));
@@ -138,9 +137,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		 
 		 // La description est facultative.
 		 if(description instanceof XdmNode){
-			 // TODO : Ben non, c'est du contenu mixte (html)!
-			 pendingRule.setDescription(htmlDescriptionSerializer.serializeNodeToString((XdmNode) description));
-			 	 
+			 pendingRule.setDescription(this.simpleHtml.simpleHtml((XdmNode) description));
 		 } else {
 			 pendingRule.setDescription(name);
 		 }
@@ -154,7 +151,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		return "normalize-space(//sonar:name[@rel = '" + id + "'])";
 	}
 	private String relatedDescriptionXPath(String id){
-		return "//sonar:description[@rel = '" + id + "']/*";
+		return "//sonar:description[@rel = '" + id + "']";
 	}
 
 	private Source stepAsSource(SchematronStep step)  {
