@@ -64,6 +64,14 @@
             	</exclusion>
             </exclusions>
         </dependency>
+        
+        <!-- for XML highlighting -->
+        <dependency>
+		    <groupId>org.sonarsource.xml</groupId>
+		    <artifactId>sonar-xml-plugin</artifactId>
+		    <version>1.5.1.1452</version>
+		</dependency>
+
 
 	</dependencies>
 
