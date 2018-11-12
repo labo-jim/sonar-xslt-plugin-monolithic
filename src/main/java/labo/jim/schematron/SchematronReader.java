@@ -133,7 +133,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		 XdmValue description = localXpathCompiler.evaluate(relatedDescriptionXPath(id), resolvedSchematron);
 		 
 		 pendingRule.setKey(id);
-		 pendingRule.setName(name);
+		 pendingRule.setName(name.isEmpty() ? id : name);
 		 
 		 // La description est facultative.
 		 if(description instanceof XdmNode){
