@@ -157,7 +157,11 @@ public class SchematronSensor implements Sensor{
 	    for (HighlightingData highlightingData : highlightingDataList) {
 	      highlightingData.highlight(highlighting);
 	    }
-	    highlighting.save();
+	    try {
+	    	highlighting.save();
+	    } catch(Exception e) {
+	    	LOG.error("Error reported during highlighting", e);
+	    }
 	}
 	
 	

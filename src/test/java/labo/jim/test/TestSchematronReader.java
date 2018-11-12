@@ -11,6 +11,7 @@ import labo.jim.schematron.SchematronReader;
 public class TestSchematronReader {
 	
 	public static final String PETIT_SCHEMATRON = "petit-schematron.sch";
+	public static final String SCHEMATRON_XSL_QUALITY = "xsl-quality/checkXSLTstyle.sch";
 	
 	@Test
 	public void monPetitSchematron() {
@@ -21,8 +22,22 @@ public class TestSchematronReader {
 			
 			assertTrue(reader.getPendingRules().size() == 3);
 			assertEquals("Variables Should be Typed",reader.getPendingRules().get(0).getName());
+						
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Test
+	public void xsltQualitySchematron() {
+		try {
 			
-			System.out.println(reader.getPendingRules().get(0).getDescription());
+			SchematronReader reader = new SchematronReader(ResourceHelper.resource(getClass(), SCHEMATRON_XSL_QUALITY));
+			reader.load();
+						
+			assertTrue(reader.getPendingRules().size() == 32);
+			
+			System.out.println("JIM "+reader.getPendingRules().get(0).getName());
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
