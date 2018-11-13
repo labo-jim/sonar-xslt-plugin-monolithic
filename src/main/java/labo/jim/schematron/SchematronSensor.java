@@ -48,6 +48,7 @@ public class SchematronSensor implements Sensor{
 	private static XPathExecutable xpathAssertReport;
 	private static XPathCompiler localCompiler;
 	private static final Logger LOG = Loggers.get(SchematronSensor.class);
+	private static final String LOG_PREFIX = "[" + SchematronSensor.class.getSimpleName() + "]";
 	
 	private SchematronReader reader;
 	private String language;
@@ -92,6 +93,7 @@ public class SchematronSensor implements Sensor{
 	    Iterable<InputFile> files = fs.inputFiles(fs.predicates().hasLanguage(this.language));
 	    for (InputFile file : files) {
 	    	try {
+	    		LOG.debug(LOG_PREFIX + " Analysing file : " + file.uri());
 	    		
 	    		XdmNode inputFileDocument = inputFileDocument(file);
 				XdmNode report = SaxonHolder.getInstance().runXslt(inputFileDocument, reader.getSchematronXSLT());
@@ -102,7 +104,7 @@ public class SchematronSensor implements Sensor{
 				saveSyntaxHighlighting(context, new XMLHighlighting(xmlPluginLikeFile).getHighlightingData(), xmlPluginLikeFile.getInputFile().wrapped());
 				
 			} catch (SaxonApiException | IOException | ProcessingException e) {
-				LOG.error("An error occurend",e); // TODO gérer ça
+				LOG.error(LOG_PREFIX + "An error occurend analysing file : " + file.uri(),e);
 			}
 		}
 	}
@@ -160,7 +162,7 @@ public class SchematronSensor implements Sensor{
 	    try {
 	    	highlighting.save();
 	    } catch(Exception e) {
-	    	LOG.error("Error reported during highlighting", e);
+	    	LOG.error(LOG_PREFIX + "Error reported during highlighting of file : " + inputFile.uri(), e);
 	    }
 	}
 	
