@@ -8,6 +8,7 @@
     <xsl:output method="html"></xsl:output>
     
     <xsl:template match="html:*">
+    <xsl:text>&#xa;</xsl:text>
         <xsl:element name="{local-name()}">
             <xsl:apply-templates select="node() | @*"/>
         </xsl:element>
