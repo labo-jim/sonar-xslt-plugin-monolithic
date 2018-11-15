@@ -7,18 +7,18 @@
     
     <xsl:output method="html"></xsl:output>
     
+    <xsl:template match="node() | @*">
+        <xsl:copy>
+            <xsl:apply-templates select="node() | @*" />
+        </xsl:copy>
+    </xsl:template>
+    
     <xsl:template match="html:*">
         <xsl:element name="{local-name()}">
             <xsl:apply-templates select="node() | @*"/>
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="html:*/@*">
-        <xsl:copy />
-    </xsl:template>
-    
-    <xsl:template match="text()">
-        <xsl:value-of select="normalize-space()" />
-    </xsl:template> 
+
     
 </xsl:stylesheet>
