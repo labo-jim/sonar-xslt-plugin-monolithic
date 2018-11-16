@@ -4,9 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+
+import org.sonar.api.batch.rule.Severity;
+import org.sonar.api.rules.RuleType;
 
 import labo.jim.exception.ProcessingException;
 import labo.jim.helpers.ResourceHelper;
@@ -29,6 +33,9 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	
 	private static final String ASSERT_REPORT = "//assert|//report";
 	private static final String ID_ATTRIBUTE_VALUE = "string(@id)";
+	private static final String ROLE_ATTRIBUTE_VALUE = "string(@role)";
+	private static final String TAGS_ATTRIBUTE_VALUE = "string(@sonar:tags)";
+	private static final String TYPE_ATTRIBUTE_VALUE = "string(@sonar:type)";
 	
 	private boolean loaded = false;
 	
@@ -112,29 +119,51 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		
 		Iterator<XdmItem> iterator = sel.iterator();
 		while (iterator.hasNext()) {
-			XdmItem item = iterator.next();
+			XdmItem assertOrReport = iterator.next();
 			
-			processSingleAssertReport(item, resolvedSchematron);
+			processSingleAssertReport(assertOrReport, resolvedSchematron);
 		}
 		
 	}
 
-	private void processSingleAssertReport(XdmItem item, XdmNode resolvedSchematron) throws SaxonApiException {
+	private void processSingleAssertReport(XdmItem assertOrReportElement, XdmNode resolvedSchematron) throws SaxonApiException {
 		// TODO refacto de tout ça !
 		
 		
 		 PendingRule pendingRule = new PendingRule();
-		 XdmValue idXdm = localXpathCompiler.evaluate(ID_ATTRIBUTE_VALUE, item);
+		 XdmValue idXdm = localXpathCompiler.evaluate(ID_ATTRIBUTE_VALUE, assertOrReportElement);
 		 String id = ((XdmAtomicValue) idXdm).getStringValue();
 		 
 		 XdmValue nameXdm = localXpathCompiler.evaluate(relatedNameXPath(id), resolvedSchematron);
 		 String name = ((XdmAtomicValue) nameXdm).getStringValue();
 		 if(name.isEmpty()) name = id;
 		 
+		 
+		 
 		 XdmValue description = localXpathCompiler.evaluate(relatedDescriptionXPath(id), resolvedSchematron);
 		 
 		 pendingRule.setKey(id);
 		 pendingRule.setName(name);
+		 
+		 // metadonnées facultatives
+		 
+		 XdmValue tagsXdm = localXpathCompiler.evaluate(TAGS_ATTRIBUTE_VALUE, assertOrReportElement);
+		 if(tagsXdm instanceof XdmAtomicValue) {
+			 String[] tags = ((XdmAtomicValue) tagsXdm).getStringValue().split("\\s");
+			 pendingRule.addTags(tags);
+		 }
+		 
+		 XdmValue typeXdm = localXpathCompiler.evaluate(TYPE_ATTRIBUTE_VALUE, assertOrReportElement);
+		 if(typeXdm instanceof XdmAtomicValue) {
+			 Optional<RuleType> type = MetaMappings.mapType(((XdmAtomicValue) typeXdm).getStringValue());
+			 pendingRule.setType(type.orElse(PendingRule.DEFAULT_TYPE));
+		 }
+		 
+		 XdmValue roleXdm = localXpathCompiler.evaluate(ROLE_ATTRIBUTE_VALUE, assertOrReportElement);
+		 if(roleXdm instanceof XdmAtomicValue) {
+			 Optional<Severity> severity = MetaMappings.mapSeverity(((XdmAtomicValue) roleXdm).getStringValue());
+			 pendingRule.setSeverity(severity.orElse(PendingRule.DEFAULT_SEVERITY));
+		 }
 		 
 		 // La description est facultative.
 		 if(description instanceof XdmNode){
@@ -142,6 +171,8 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		 } else {
 			 pendingRule.setDescription(name);
 		 }
+		 
+		 
 		
 		 this.pendingRules.add(pendingRule);
 	}

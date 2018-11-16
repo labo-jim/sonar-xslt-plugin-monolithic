@@ -142,7 +142,8 @@
       <sonar:description rel="xslt-quality_use-resolve-uri-instead-of-concat">TODO description</sonar:description>
       <report test="contains(., 'document(concat(') or contains(., 'doc(concat(')"
         id="xslt-quality_use-resolve-uri-instead-of-concat"   
-        sonar:tags="xsl-common">
+        sonar:tags="xsl-common"
+        sonar:type="bug">
         Don't use concat within <value-of select="if (contains(.,'document(')) then 'document()' else 'doc()'"/> function, use resolve-uri instead. (you may use static-base-uri() or base-uri())
       </report>
     </rule>

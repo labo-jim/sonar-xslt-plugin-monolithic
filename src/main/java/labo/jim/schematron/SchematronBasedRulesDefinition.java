@@ -23,12 +23,16 @@ public class SchematronBasedRulesDefinition implements RulesDefinition{
 	public void define(Context context) {
 		NewRepository repo = context.createRepository(repoKey, LanguageKey);
 		for (PendingRule pendingRule : pendingRules) {
-			repo.createRule(pendingRule.getKey()).setName(pendingRule.getName())
-			.setHtmlDescription(pendingRule.getDescription());
+			NewRule newRule = repo.createRule(pendingRule.getKey()).setName(pendingRule.getName())
+			.setHtmlDescription(pendingRule.getDescription())
+			.setType(pendingRule.getType())
+			.setSeverity(pendingRule.getSeverity().toString());
 			
-			// TODO Severity
-			// TODO type
-			// TODO Description, remediation machinChose, etc.
+			List<String> tags = pendingRule.getTags();
+			if(!tags.isEmpty()) {
+				newRule.setTags(tags.toArray(new String[tags.size()]));
+			}
+			
 		}
 		repo.done();
 		
