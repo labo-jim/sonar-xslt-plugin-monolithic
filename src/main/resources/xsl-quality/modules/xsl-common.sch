@@ -165,7 +165,38 @@
   <pattern id="xslt-quality_typing">
     <rule context="xsl:variable | xsl:param  | xsl:with-param | xsl:function">
       <sonar:name rel="xslt-quality_typing-with-as-attribute">Parameters, variables and functions declarations should be typed</sonar:name>
-      <sonar:description rel="xslt-quality_typing-with-as-attribute">TODO description (explicitely typed)</sonar:description>
+      <sonar:description rel="xslt-quality_typing-with-as-attribute">
+        
+        <html:p>It is good practice to explicitely specify the required type of a variable, parameter, or the return value of a function</html:p>
+        
+        <html:ul>
+          <html:li>Untyped values can lead to unxecepted behavior</html:li>
+          <html:li>The debuging is quite faster and the testability of the stylesheet is truly improved.</html:li>
+        </html:ul>
+        
+        <html:blockquote>
+          <html:p>[Definition: The context within a stylesheet where an XPath expression appears may specify the required type of the expression. The required type indicates the type of the value that the expression is expected to return.] If no required type is specified, the expression may return any value: in effect, the required type is then item()*.</html:p>
+        </html:blockquote>
+        
+        <html:h2>Noncompliant Code Example</html:h2>
+            
+        <html:pre>
+          &lt;xsl:variable name="foo" select="./invoces/invoice[@status = 'paid']" /&gt;
+        </html:pre>
+        
+        <html:h2>Compliant Solution</html:h2>
+             
+        <html:pre>
+          &lt;xsl:variable name="foo" select="./invoces/invoice[@status = 'paid']" as="element(invoice)*"/&gt;
+        </html:pre>
+        
+        <html:h2>See</html:h2>
+        
+        <html:ul>
+          <html:li>Related chapter in <html:a href="https://www.w3.org/TR/xslt-30/#dt-required-type">W3C XSLT 3.0 Specications</html:a></html:li>
+        </html:ul>
+        
+      </sonar:description>
       <assert test="@as"
         diagnostics="addType"
         id="xslt-quality_typing-with-as-attribute"
