@@ -36,7 +36,7 @@ public class SonarXSLTPlugin  implements Plugin{
 				// ===========
 				
 				// TODO à modulariser
-				.addSchematronResource("petit-schematron.sch")
+				//.addSchematronResource("petit-schematron.sch")
 				.addSchematronResource("xsl-quality/checkXSLTstyle.sch");
 		  		// Cette méthode peut être appelée autant de fois que nécessaire
 		
