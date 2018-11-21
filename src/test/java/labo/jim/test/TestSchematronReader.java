@@ -3,6 +3,7 @@ package labo.jim.test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.sonar.api.rules.RuleType;
 
 import labo.jim.helpers.ResourceHelper;
 import labo.jim.schematron.SchematronLanguageDeclaration;
@@ -37,7 +38,10 @@ public class TestSchematronReader {
 						
 			assertTrue(reader.getPendingRules().size() == 32);
 			
-			System.out.println("JIM "+reader.getPendingRules().get(0).getName());
+			assertEquals("Rule name test case", "Stylesheets should not have unused namespace declarations", reader.getPendingRules().get(0).getName());
+			assertEquals("Rule tags test case", "xslqual", reader.getPendingRules().get(0).getTags().get(0));
+			assertEquals("Rule type test case", RuleType.CODE_SMELL, reader.getPendingRules().get(0).getType());
+			
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);

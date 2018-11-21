@@ -34,8 +34,6 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	private static final String ASSERT_REPORT = "//assert|//report";
 	private static final String ID_ATTRIBUTE_VALUE = "string(@id)";
 	private static final String ROLE_ATTRIBUTE_VALUE = "string(@role)";
-	private static final String TAGS_ATTRIBUTE_VALUE = "string(@sonar:tags)";
-	private static final String TYPE_ATTRIBUTE_VALUE = "string(@sonar:type)";
 	
 	private boolean loaded = false;
 	
@@ -147,13 +145,15 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		 
 		 // metadonnées facultatives
 		 
-		 XdmValue tagsXdm = localXpathCompiler.evaluate(TAGS_ATTRIBUTE_VALUE, assertOrReportElement);
-		 if(tagsXdm instanceof XdmAtomicValue) {
-			 String[] tags = ((XdmAtomicValue) tagsXdm).getStringValue().split("\\s");
-			 pendingRule.addTags(tags);
-		 }
+		 XdmValue tagsStringSequenceXdm = localXpathCompiler.evaluate(relatedTagsXPath(id), resolvedSchematron);
+		 for (XdmItem singleTagXdmItem : tagsStringSequenceXdm) {
+			 if(singleTagXdmItem instanceof XdmAtomicValue) {
+				 String tags = ((XdmAtomicValue) singleTagXdmItem).getStringValue();
+				 pendingRule.addTags(tags);
+			 }
+		}
 		 
-		 XdmValue typeXdm = localXpathCompiler.evaluate(TYPE_ATTRIBUTE_VALUE, assertOrReportElement);
+		 XdmValue typeXdm = localXpathCompiler.evaluate(relatedTypeXPath(id), resolvedSchematron);
 		 if(typeXdm instanceof XdmAtomicValue) {
 			 Optional<RuleType> type = MetaMappings.mapType(((XdmAtomicValue) typeXdm).getStringValue());
 			 pendingRule.setType(type.orElse(PendingRule.DEFAULT_TYPE));
@@ -184,6 +184,12 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	}
 	private String relatedDescriptionXPath(String id){
 		return "//sonar:description[@rel = '" + id + "']";
+	}
+	private String relatedTypeXPath(String id){
+		return "normalize-space(//sonar:type[@rel = '" + id + "'])";
+	}
+	private String relatedTagsXPath(String id){
+		return "//sonar:tags[@rel = '" + id + "']/normalize-space(sonar:tag)";
 	}
 
 	private Source stepAsSource(SchematronStep step)  {
