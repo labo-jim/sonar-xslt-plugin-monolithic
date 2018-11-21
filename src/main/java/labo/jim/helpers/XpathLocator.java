@@ -1,7 +1,7 @@
 package labo.jim.helpers;
 
 import javax.xml.transform.Source;
-import labo.jim.exception.ProcessingException;
+import labo.jim.exception.SchematronProcessingException;
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -16,7 +16,7 @@ public class XpathLocator {
 	private XdmNode builtDocument;
 
 
-	public XpathLocator(Source xmlDocument) throws ProcessingException {
+	public XpathLocator(Source xmlDocument) throws SchematronProcessingException {
 		Processor proc = SaxonHolder.getInstance().getProcessor();
 		this.xpathCompilo = proc.newXPathCompiler();
 		this.docBuilder = proc.newDocumentBuilder();
@@ -24,7 +24,7 @@ public class XpathLocator {
 		try {
 			builtDocument = this.docBuilder.build(xmlDocument);
 		} catch (SaxonApiException e) {
-			throw new ProcessingException(e);
+			throw new SchematronProcessingException(e);
 		}
 	}
 	
@@ -35,12 +35,12 @@ public class XpathLocator {
 	}
 	
 	
-	public int locateSingle(String xpath) throws ProcessingException{
+	public int locateSingle(String xpath) throws SchematronProcessingException{
 		try {
 			XdmItem occurence = this.xpathCompilo.evaluateSingle(xpath, builtDocument);
 			return ((XdmNode) occurence).getLineNumber();
 		} catch (SaxonApiException | ClassCastException e) {
-			throw new ProcessingException(e);
+			throw new SchematronProcessingException(e);
 		}
 	}
 	

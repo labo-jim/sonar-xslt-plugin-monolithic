@@ -2,7 +2,7 @@ package labo.jim.schematron;
 
 import org.sonar.api.rule.RuleKey;
 
-import labo.jim.exception.ProcessingException;
+import labo.jim.exception.SchematronProcessingException;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmValue;
@@ -21,7 +21,7 @@ public class PendingIssue {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static PendingIssue of(XdmValue idValue, XdmValue locationValue, XdmValue messageValue) throws ProcessingException{
+	public static PendingIssue of(XdmValue idValue, XdmValue locationValue, XdmValue messageValue) throws SchematronProcessingException{
 		PendingIssue pendingIssue = new PendingIssue();
 		try {
 			pendingIssue.ruleKey = ((XdmAtomicValue)idValue).getStringValue();
@@ -29,7 +29,7 @@ public class PendingIssue {
 			pendingIssue.message = ((XdmAtomicValue)messageValue).getStringValue();
 			return pendingIssue;
 		} catch (ClassCastException e) {
-			throw new ProcessingException(e);
+			throw new SchematronProcessingException(e);
 		}
 	}
 	

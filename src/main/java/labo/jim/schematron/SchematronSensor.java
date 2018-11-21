@@ -23,7 +23,7 @@ import org.sonar.plugins.xml.compat.CompatibleInputFile;
 import org.sonar.plugins.xml.highlighting.HighlightingData;
 import org.sonar.plugins.xml.highlighting.XMLHighlighting;
 
-import labo.jim.exception.ProcessingException;
+import labo.jim.exception.SchematronProcessingException;
 import labo.jim.helpers.SaxonHolder;
 import labo.jim.helpers.XpathLocator;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -103,13 +103,13 @@ public class SchematronSensor implements Sensor{
 				XmlFile xmlPluginLikeFile = new XmlFile(new CompatibleInputFile(file), fs);
 				saveSyntaxHighlighting(context, new XMLHighlighting(xmlPluginLikeFile).getHighlightingData(), xmlPluginLikeFile.getInputFile().wrapped());
 				
-			} catch (SaxonApiException | IOException | ProcessingException e) {
+			} catch (SaxonApiException | IOException | SchematronProcessingException e) {
 				LOG.error(LOG_PREFIX + "An error occurend analysing file : " + file.uri(),e);
 			}
 		}
 	}
 
-	private void processReport(InputFile inputFile,XdmNode inputFileDocument, XdmNode report, SensorContext context) throws SaxonApiException, ProcessingException, IOException {
+	private void processReport(InputFile inputFile,XdmNode inputFileDocument, XdmNode report, SensorContext context) throws SaxonApiException, SchematronProcessingException, IOException {
 		List<PendingIssue> pendingIssues = prepareIssues(report);
 		
 		for (PendingIssue pendingIssue : pendingIssues) {
@@ -129,7 +129,7 @@ public class SchematronSensor implements Sensor{
 		
 	}
 
-	private List<PendingIssue> prepareIssues(XdmNode report) throws SaxonApiException, ProcessingException {
+	private List<PendingIssue> prepareIssues(XdmNode report) throws SaxonApiException, SchematronProcessingException {
 		List<PendingIssue> pendingIssues = new LinkedList<>();
 		XPathSelector selector = xpathAssertReport.load();
 		selector.setContextItem(report);

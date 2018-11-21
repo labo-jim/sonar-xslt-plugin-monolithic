@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.sonar.api.server.rule.RulesDefinition;
 
-import labo.jim.exception.ProcessingException;
+import labo.jim.exception.SchematronProcessingException;
 
 public class SchematronBasedRulesDefinition implements RulesDefinition{
 	
 	private List<PendingRule> pendingRules;
 	private String repoKey;
 	private String LanguageKey;
+	
 
 	public SchematronBasedRulesDefinition(List<PendingRule> pendingRules, String repoKey, String languageKey) {
 		super();

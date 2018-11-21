@@ -12,7 +12,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.sonar.api.batch.rule.Severity;
 import org.sonar.api.rules.RuleType;
 
-import labo.jim.exception.ProcessingException;
+import labo.jim.exception.SchematronProcessingException;
 import labo.jim.helpers.ResourceHelper;
 import labo.jim.helpers.SaxonHolder;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -81,7 +81,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	// ====
 
 
-	public void load() throws ProcessingException{
+	public void load() throws SchematronProcessingException{
 		if(this.loaded){
 			throw new IllegalStateException("Already loaded.");
 		}
@@ -103,7 +103,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 			this.loaded = true;
 			
 		} catch (SaxonApiException  e) {
-			throw new ProcessingException(e);
+			throw new SchematronProcessingException(e);
 		}
 	}
 	
@@ -189,7 +189,7 @@ private static final String RSRC_PREFIX = "schematron-code/";
 		return "normalize-space(//sonar:type[@rel = '" + id + "'])";
 	}
 	private String relatedTagsXPath(String id){
-		return "//sonar:tags[@rel = '" + id + "']/normalize-space(sonar:tag)";
+		return "//sonar:tags[@rel = '" + id + "']/sonar:tag/normalize-space(.)";
 	}
 
 	private Source stepAsSource(SchematronStep step)  {

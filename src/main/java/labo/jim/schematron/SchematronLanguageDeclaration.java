@@ -1,9 +1,15 @@
 package labo.jim.schematron;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.xml.transform.Source;
@@ -13,11 +19,14 @@ import org.sonar.api.Plugin.Context;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 import org.sonar.api.server.rule.RulesDefinition;
 
-import labo.jim.exception.ProcessingException;
+import labo.jim.exception.SchematronProcessingException;
 import labo.jim.helpers.ResourceHelper;
 
 public class SchematronLanguageDeclaration {
 	
+	private static final String SCH_PATH = "com/jimetevenard/sonar-xsl/";
+
+	private static final String ENTRYPOINTS_FILENAME = "ENTRYPOINTS";
 	
 	private String name;
 	private String key;
@@ -28,9 +37,46 @@ public class SchematronLanguageDeclaration {
 	private List<SchematronReader> schematrons = new ArrayList<>();
 	private List<PendingRule> pendingRules = new ArrayList<>(50);
 		
+	public SchematronLanguageDeclaration() throws SchematronProcessingException {
+		try {
+			addDependenciesSchematrons();
+		} catch (IOException e) {
+			throw new SchematronProcessingException(e);
+		}
+	}
 
 	
-	public void declare(Context pluginContext) throws ProcessingException{
+	private void addDependenciesSchematrons() throws IOException {
+		List<String> dependenciesEntryPoints = scanDeclaredEntryPointsInDependencies();
+
+		for (String entryPoint : dependenciesEntryPoints) {
+			this.addSchematronResource(SCH_PATH + entryPoint);
+		}
+		
+		// TODO : Quid des conflits de noms entre dépences ?
+		// cf. Christophe marchand - @cmarchand qui en connait un rayon sur ces problematiques
+	}
+
+
+	private List<String> scanDeclaredEntryPointsInDependencies() throws IOException {
+		List<String> dependenciesEntryPoints = new ArrayList<>();
+		
+		Enumeration<URL> entryPointsDeclarations = this.getClass().getClassLoader().getResources(SCH_PATH + ENTRYPOINTS_FILENAME);
+		while (entryPointsDeclarations.hasMoreElements()) {
+			 InputStream entryPointDeclaration = ((URL) entryPointsDeclarations.nextElement()).openStream();
+			 BufferedReader reader = new BufferedReader(new InputStreamReader(entryPointDeclaration));
+			 String line;
+			 while((line = reader.readLine()) != null) {
+				 dependenciesEntryPoints.add(line);
+			 }
+			 reader.close();
+		}
+		
+		return dependenciesEntryPoints;
+	}
+
+
+	public void declare(Context pluginContext) throws SchematronProcessingException{
 		checkState();
 		SchematronBasedLanguage language = new SchematronBasedLanguage(key, name, fileSuffixes);
 		
