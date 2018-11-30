@@ -1,12 +1,10 @@
 package labo.jim.schematron;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -19,14 +17,16 @@ import org.sonar.api.Plugin.Context;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 import org.sonar.api.server.rule.RulesDefinition;
 
+import com.jimetevenard.xml.sonar.SonarPackagingConstants;
+
 import labo.jim.exception.SchematronProcessingException;
 import labo.jim.helpers.ResourceHelper;
 
 public class SchematronLanguageDeclaration {
 	
-	private static final String SCH_PATH = "com/jimetevenard/sonar-xsl/";
+	private static final String SCH_PATH = SonarPackagingConstants.PACKAGE_PATH;
 
-	private static final String ENTRYPOINTS_FILENAME = "ENTRYPOINTS";
+	private static final String ENTRYPOINTS_FILENAME = SonarPackagingConstants.ENTRYPOINTS_FILENAME;
 	
 	private String name;
 	private String key;
@@ -37,24 +37,25 @@ public class SchematronLanguageDeclaration {
 	private List<SchematronReader> schematrons = new ArrayList<>();
 	private List<PendingRule> pendingRules = new ArrayList<>(50);
 		
-	public SchematronLanguageDeclaration() throws SchematronProcessingException {
+	
+
+	
+	public SchematronLanguageDeclaration addSchematronsFromDependencies() throws SchematronProcessingException {
 		try {
-			addDependenciesSchematrons();
+			List<String> dependenciesEntryPoints = scanDeclaredEntryPointsInDependencies();
+
+			for (String entryPoint : dependenciesEntryPoints) {
+				this.addSchematronResource(SCH_PATH + entryPoint);
+			}
+			
+			// TODO : Quid des conflits de noms entre dépences ?
+			// cf. Christophe marchand - @cmarchand qui en connait un rayon sur ces problematiques
+			
 		} catch (IOException e) {
 			throw new SchematronProcessingException(e);
 		}
-	}
-
-	
-	private void addDependenciesSchematrons() throws IOException {
-		List<String> dependenciesEntryPoints = scanDeclaredEntryPointsInDependencies();
-
-		for (String entryPoint : dependenciesEntryPoints) {
-			this.addSchematronResource(SCH_PATH + entryPoint);
-		}
 		
-		// TODO : Quid des conflits de noms entre dépences ?
-		// cf. Christophe marchand - @cmarchand qui en connait un rayon sur ces problematiques
+		return this;
 	}
 
 

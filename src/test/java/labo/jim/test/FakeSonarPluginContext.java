@@ -14,7 +14,6 @@ public class FakeSonarPluginContext extends Context {
 
 	public FakeSonarPluginContext() {
 		super(new FakeSonarRuntime());
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -33,6 +32,7 @@ public class FakeSonarPluginContext extends Context {
 		return this;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Context addExtensions(Collection extensions) {
 		this.extensionsAdded.addAll(extensions);
@@ -49,6 +49,7 @@ public class FakeSonarPluginContext extends Context {
 		return this;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List getExtensions() {
 		return this.extensionsAdded;

@@ -125,7 +125,6 @@ private static final String RSRC_PREFIX = "schematron-code/";
 	}
 
 	private void processSingleAssertReport(XdmItem assertOrReportElement, XdmNode resolvedSchematron) throws SaxonApiException {
-		// TODO refacto de tout ça !
 		
 		
 		 PendingRule pendingRule = new PendingRule();

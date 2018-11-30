@@ -19,7 +19,6 @@ public class PendingRule {
 	private RuleType type = DEFAULT_TYPE;
 	private List<String> tags = new ArrayList<>(DEFAULT_TAGLIST_CAP);
 	
-	// TODO severity, catype, etc...
 
 	
 	public String getKey() {

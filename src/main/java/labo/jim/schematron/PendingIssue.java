@@ -4,7 +4,6 @@ import org.sonar.api.rule.RuleKey;
 
 import labo.jim.exception.SchematronProcessingException;
 import net.sf.saxon.s9api.XdmAtomicValue;
-import net.sf.saxon.s9api.XdmItem;
 import net.sf.saxon.s9api.XdmValue;
 
 public class PendingIssue {
@@ -16,10 +15,7 @@ public class PendingIssue {
 	
 	
 	
-	public PendingIssue() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	
 	
 	public static PendingIssue of(XdmValue idValue, XdmValue locationValue, XdmValue messageValue) throws SchematronProcessingException{
 		PendingIssue pendingIssue = new PendingIssue();

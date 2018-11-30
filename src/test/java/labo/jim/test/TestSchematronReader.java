@@ -1,13 +1,13 @@
 package labo.jim.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.sonar.api.rules.RuleType;
 
 import labo.jim.helpers.ResourceHelper;
 import labo.jim.schematron.PendingRule;
-import labo.jim.schematron.SchematronLanguageDeclaration;
 import labo.jim.schematron.SchematronReader;
 
 public class TestSchematronReader {

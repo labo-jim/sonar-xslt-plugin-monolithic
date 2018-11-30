@@ -19,15 +19,15 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>labo.jim</groupId>
 			<artifactId>xslt-quality</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<!-- ========================================== -->
-		
+
 		<dependency>
 			<groupId>org.sonarsource.sonarqube</groupId>
 			<artifactId>sonar-plugin-api</artifactId>
@@ -36,6 +36,12 @@
 			<version>${sonar.apiVersion}</version>
 			<!-- mandatory scope -->
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jimetevenard.xml.sonar</groupId>
+			<artifactId>sonar-xsl-packaging-api</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>

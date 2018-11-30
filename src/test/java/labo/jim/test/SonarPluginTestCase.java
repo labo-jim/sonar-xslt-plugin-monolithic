@@ -1,4 +1,4 @@
-package labo.jim.sonarPlugin;
+package labo.jim.test;
 
 import org.sonar.api.Plugin;
 import org.sonar.api.utils.log.Loggers;
@@ -6,7 +6,7 @@ import org.sonar.api.utils.log.Loggers;
 import labo.jim.exception.SchematronProcessingException;
 import labo.jim.schematron.SchematronLanguageDeclaration;
 
-public class SonarXSLTPlugin implements Plugin {
+public class SonarPluginTestCase implements Plugin {
 
 	@Override
 	public void define(Context context) {
@@ -17,7 +17,7 @@ public class SonarXSLTPlugin implements Plugin {
 			declaration.declare(context);
 
 		} catch (SchematronProcessingException e) {
-			Loggers.get(SonarXSLTPlugin.class).error("Sacrebleu !", e);
+			Loggers.get(SonarPluginTestCase.class).error("Sacrebleu !", e);
 		}
 
 	}
@@ -25,15 +25,10 @@ public class SonarXSLTPlugin implements Plugin {
 	public SchematronLanguageDeclaration xslLanguageDeclaration() throws SchematronProcessingException {
 		return new SchematronLanguageDeclaration()
 				
-				.addSchematronsFromDependencies()
-				
-				.name("Xslt")
-
-				// cette chaine est l'ID du langage.
-				// Doit être unique dans le Sonar
-				.key("xslt")
-
-				.addFileSuffix(".xsl");
+				.addSchematronsFromDependencies()			
+				.name("Foo Language")
+				.key("foo")
+				.addFileSuffix(".foo");
 
 	}
 

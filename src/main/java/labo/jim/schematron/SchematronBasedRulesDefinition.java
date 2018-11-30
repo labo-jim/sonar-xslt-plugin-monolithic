@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.sonar.api.server.rule.RulesDefinition;
 
-import labo.jim.exception.SchematronProcessingException;
-
 public class SchematronBasedRulesDefinition implements RulesDefinition{
 	
 	private List<PendingRule> pendingRules;
