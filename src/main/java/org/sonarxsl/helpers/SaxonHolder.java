@@ -21,8 +21,10 @@ import net.sf.saxon.s9api.XsltTransformer;
 
 public class SaxonHolder {
 	
-	private static SaxonHolder instance;
+	public static final String VERBOSE = SaxonHolder.class.getName() + ".verbose";
 	
+	private static SaxonHolder instance;
+
 	private Processor proc;
 	private XsltCompiler compiler;
 	private XPathCompiler xpathCompiler;
@@ -104,6 +106,10 @@ public class SaxonHolder {
 		public void message(XdmNode content, boolean terminate, SourceLocator locator) {
 			if(terminate) {
 				throw new RuntimeException("XSLT transformation terminated : " + content + locator);
+			}
+			if(System.getProperty(VERBOSE) != null) {
+				String loc = locator.getSystemId() + ", line " + locator.getLineNumber();
+				System.out.println(content + " at " + loc);
 			}
 		}
 		

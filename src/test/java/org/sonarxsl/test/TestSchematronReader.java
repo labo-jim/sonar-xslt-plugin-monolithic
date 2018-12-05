@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.sonar.api.rules.RuleType;
 import org.sonarxsl.helpers.ResourceHelper;
+import org.sonarxsl.helpers.SaxonHolder;
 import org.sonarxsl.schematron.PendingRule;
 import org.sonarxsl.schematron.SchematronReader;
 
@@ -17,6 +18,8 @@ public class TestSchematronReader {
 	@Test
 	public void monPetitSchematron() {
 		try {
+			
+			System.setProperty(SaxonHolder.VERBOSE, "true");
 			
 			SchematronReader reader = new SchematronReader(ResourceHelper.resource(getClass(), PETIT_SCHEMATRON));
 			reader.load();
