@@ -1,8 +1,7 @@
-package labo.jim.test;
+package org.sonarxsl.test;
 
 import org.junit.Test;
-
-import labo.jim.sonarPlugin.SonarXSLTPlugin;
+import org.sonarxsl.sonarPlugin.SonarXSLTPlugin;
 
 public class TestLanguageDeclaration {
 	

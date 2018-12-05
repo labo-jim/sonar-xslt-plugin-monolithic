@@ -1,14 +1,13 @@
-package labo.jim.test;
+package org.sonarxsl.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.sonar.api.rules.RuleType;
-
-import labo.jim.helpers.ResourceHelper;
-import labo.jim.schematron.PendingRule;
-import labo.jim.schematron.SchematronReader;
+import org.sonarxsl.helpers.ResourceHelper;
+import org.sonarxsl.schematron.PendingRule;
+import org.sonarxsl.schematron.SchematronReader;
 
 public class TestSchematronReader {
 	

@@ -1,8 +1,8 @@
-package labo.jim.schematron;
+package org.sonarxsl.schematron;
 
 import org.sonar.api.rule.RuleKey;
+import org.sonarxsl.exception.SchematronProcessingException;
 
-import labo.jim.exception.SchematronProcessingException;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmValue;
 

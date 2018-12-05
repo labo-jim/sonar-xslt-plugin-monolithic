@@ -1,4 +1,4 @@
-package labo.jim.test;
+package org.sonarxsl.test;
 
 import org.sonar.api.SonarProduct;
 import org.sonar.api.SonarQubeSide;

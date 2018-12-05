@@ -1,7 +1,8 @@
-package labo.jim.schematron;
+package org.sonarxsl.schematron;
 
-import labo.jim.helpers.ResourceHelper;
-import labo.jim.helpers.SaxonHolder;
+import org.sonarxsl.helpers.ResourceHelper;
+import org.sonarxsl.helpers.SaxonHolder;
+
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltTransformer;

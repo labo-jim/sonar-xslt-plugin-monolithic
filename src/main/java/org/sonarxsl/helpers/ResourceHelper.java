@@ -1,4 +1,4 @@
-package labo.jim.helpers;
+package org.sonarxsl.helpers;
 
 import java.io.InputStream;
 

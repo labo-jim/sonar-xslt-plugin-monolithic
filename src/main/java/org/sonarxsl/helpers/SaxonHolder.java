@@ -1,12 +1,15 @@
-package labo.jim.helpers;
+package org.sonarxsl.helpers;
 
 import java.io.File;
+import java.io.PrintStream;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.SourceLocator;
 
 import org.xmlresolver.Resolver;
 
 import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.MessageListener;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
@@ -25,7 +28,7 @@ public class SaxonHolder {
 	private XPathCompiler xpathCompiler;
 	private DocumentBuilder docBuilder;
 	
-
+	private QuietMessageListener quietListener = new QuietMessageListener();
 	
 
 
@@ -64,11 +67,12 @@ public class SaxonHolder {
 	// ==============================================
 	
 	public XdmNode runXslt(Source source, XsltTransformer xsl) throws SaxonApiException{
+		xsl.setMessageListener(quietListener);
 		xsl.setSource(source);
 		XdmDestination destination = new XdmDestination();
 		xsl.setDestination(destination);
 		xsl.transform();
-		
+				
 		return destination.getXdmNode();
 	}
 	
@@ -92,6 +96,19 @@ public class SaxonHolder {
 	
 	public XPathSelector compileXpath(String xpath) throws SaxonApiException{
 		return xpathCompiler.compile(xpath).load();
+	}
+	
+	public static class QuietMessageListener implements MessageListener {
+		
+		@Override
+		public void message(XdmNode content, boolean terminate, SourceLocator locator) {
+			if(terminate) {
+				throw new RuntimeException("XSLT transformation terminated : " + content + locator);
+			}
+		}
+		
+		
+		
 	}
 	
 	

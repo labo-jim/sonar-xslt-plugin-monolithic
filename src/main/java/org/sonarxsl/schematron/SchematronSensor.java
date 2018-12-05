@@ -1,4 +1,4 @@
-package labo.jim.schematron;
+package org.sonarxsl.schematron;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +21,10 @@ import org.sonar.plugins.xml.checks.XmlFile;
 import org.sonar.plugins.xml.compat.CompatibleInputFile;
 import org.sonar.plugins.xml.highlighting.HighlightingData;
 import org.sonar.plugins.xml.highlighting.XMLHighlighting;
+import org.sonarxsl.exception.SchematronProcessingException;
+import org.sonarxsl.helpers.SaxonHolder;
+import org.sonarxsl.helpers.XpathLocator;
 
-import labo.jim.exception.SchematronProcessingException;
-import labo.jim.helpers.SaxonHolder;
-import labo.jim.helpers.XpathLocator;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathExecutable;

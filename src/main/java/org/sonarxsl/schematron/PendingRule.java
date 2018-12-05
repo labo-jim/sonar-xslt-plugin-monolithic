@@ -1,4 +1,4 @@
-package labo.jim.schematron;
+package org.sonarxsl.schematron;
 
 import java.util.ArrayList;
 import java.util.List;

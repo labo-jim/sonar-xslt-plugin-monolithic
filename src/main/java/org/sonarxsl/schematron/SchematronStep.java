@@ -1,4 +1,4 @@
-package labo.jim.schematron;
+package org.sonarxsl.schematron;
 
 public enum SchematronStep {
 	STEP1("iso_dsdl_include.xsl"),

@@ -1,4 +1,4 @@
-package labo.jim.schematron;
+package org.sonarxsl.schematron;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,11 +16,10 @@ import javax.xml.transform.stream.StreamSource;
 import org.sonar.api.Plugin.Context;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 import org.sonar.api.server.rule.RulesDefinition;
+import org.sonarxsl.exception.SchematronProcessingException;
+import org.sonarxsl.helpers.ResourceHelper;
 
 import com.jimetevenard.xml.sonar.SonarPackagingConstants;
-
-import labo.jim.exception.SchematronProcessingException;
-import labo.jim.helpers.ResourceHelper;
 
 public class SchematronLanguageDeclaration {
 	

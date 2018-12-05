@@ -1,4 +1,4 @@
-package labo.jim.test;
+package org.sonarxsl.test;
 
 import java.util.ArrayList;
 import java.util.Collection;

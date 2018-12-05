@@ -1,10 +1,9 @@
-package labo.jim.sonarPlugin;
+package org.sonarxsl.sonarPlugin;
 
 import org.sonar.api.Plugin;
 import org.sonar.api.utils.log.Loggers;
-
-import labo.jim.exception.SchematronProcessingException;
-import labo.jim.schematron.SchematronLanguageDeclaration;
+import org.sonarxsl.exception.SchematronProcessingException;
+import org.sonarxsl.schematron.SchematronLanguageDeclaration;
 
 public class SonarXSLTPlugin implements Plugin {
 

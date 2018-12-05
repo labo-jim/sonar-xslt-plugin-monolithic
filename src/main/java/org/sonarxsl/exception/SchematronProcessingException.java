@@ -1,4 +1,4 @@
-package labo.jim.exception;
+package org.sonarxsl.exception;
 
 public class SchematronProcessingException extends Exception {
 

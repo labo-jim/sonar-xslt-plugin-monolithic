@@ -1,7 +1,9 @@
-package labo.jim.helpers;
+package org.sonarxsl.helpers;
 
 import javax.xml.transform.Source;
-import labo.jim.exception.SchematronProcessingException;
+
+import org.sonarxsl.exception.SchematronProcessingException;
+
 import net.sf.saxon.s9api.DocumentBuilder;
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;

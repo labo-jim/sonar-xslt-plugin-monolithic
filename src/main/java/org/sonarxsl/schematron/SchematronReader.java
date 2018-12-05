@@ -1,4 +1,4 @@
-package labo.jim.schematron;
+package org.sonarxsl.schematron;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.sonar.api.batch.rule.Severity;
 import org.sonar.api.rules.RuleType;
+import org.sonarxsl.exception.SchematronProcessingException;
+import org.sonarxsl.helpers.ResourceHelper;
+import org.sonarxsl.helpers.SaxonHolder;
 
-import labo.jim.exception.SchematronProcessingException;
-import labo.jim.helpers.ResourceHelper;
-import labo.jim.helpers.SaxonHolder;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XPathCompiler;
 import net.sf.saxon.s9api.XPathSelector;
