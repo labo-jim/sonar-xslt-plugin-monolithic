@@ -16,10 +16,9 @@ import javax.xml.transform.stream.StreamSource;
 import org.sonar.api.Plugin.Context;
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
 import org.sonar.api.server.rule.RulesDefinition;
+import org.sonarxsl.SonarPackagingConstants;
 import org.sonarxsl.exception.SchematronProcessingException;
 import org.sonarxsl.helpers.ResourceHelper;
-
-import com.jimetevenard.xml.sonar.SonarPackagingConstants;
 
 public class SchematronLanguageDeclaration {
 	
